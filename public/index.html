@@ -62,23 +62,23 @@
             <h2 id="metodo-titulo"></h2> <form id="calculadora-form">
                 <div class="form-group">
                     <label for="valorActivo">Valor del Activo ($):</label>
-                    <input type="number" id="valorActivo" step="0.01" required>
+                    <input type="text" id="valorActivo" inputmode="numeric" required>
                 </div>
 
                 <div class="form-group">
                     <label for="vidaUtil">Vida Útil (en años):</label>
-                    <input type="number" id="vidaUtil" step="1" required>
+                    <input type="text" id="vidaUtil" inputmode="numeric" required>
                 </div>
 
                 <div class="form-group" id="group-valorSalvamento">
                     <label for="valorSalvamento">Valor de Salvamento ($):</label>
-                    <input type="number" id="valorSalvamento" step="0.01" placeholder="Requerido para Saldos Decrecientes">
+                    <input type="text" id="valorSalvamento" inputmode="numeric" placeholder="Requerido para Saldos Decrecientes">
                 </div>
 
                 <div id="campos-unidades" class="hidden">
                     <div class="form-group">
                         <label for="unidadesTotales">Capacidad Total (Unidades):</label>
-                        <input type="number" id="unidadesTotales">
+                        <input type="text" id="unidadesTotales" inputmode="numeric">
                     </div>
                     <div class="form-group">
                         <label for="produccionAnual">Producción por Año (separado por comas):</label>

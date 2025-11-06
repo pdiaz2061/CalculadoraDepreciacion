@@ -1,164 +1,213 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const PORT = 3000;
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Elementos de la interfaz ---
+    const metodoSelector = document.getElementById('metodo-selector');
+    const calculadoraSection = document.getElementById('calculadora-section');
+    const backButton = document.getElementById('back-button');
 
-// Middleware para servir archivos estáticos (HTML, CSS, JS) desde la carpeta 'public'
-app.use(express.static('public'));
-// Middleware para entender el JSON que nos enviará el frontend
-app.use(express.json());
+    const metodoTitulo = document.getElementById('metodo-titulo');
+    const metodoSeleccionadoHidden = document.getElementById('metodo-seleccionado-hidden');
 
-// Endpoint de la API para calcular
-app.post('/calcular', (req, res) => {
-    const { metodo, valorActivo, vidaUtil, valorSalvamento, produccionAnual, unidadesTotales } = req.body;
+    const form = document.getElementById('calculadora-form');
+    const valorActivoInput = document.getElementById('valorActivo');
+    const vidaUtilInput = document.getElementById('vidaUtil');
+    const valorSalvamentoInput = document.getElementById('valorSalvamento');
+    const groupValorSalvamento = document.getElementById('group-valorSalvamento');
 
-    let tablaResultado = [];
-
-    try {
-        switch (metodo) {
-            case 'lineaRecta':
-                // Basado en la fórmula de la página 6 [cite: 64]
-                tablaResultado = calcularLineaRecta(valorActivo, vidaUtil);
-                break;
-            case 'sumaDigitos':
-                // Basado en las fórmulas de las páginas 11-13 [cite: 126, 127, 153]
-                tablaResultado = calcularSumaDigitos(valorActivo, vidaUtil);
-                break;
-            case 'saldosDecrecientes':
-                // Basado en las fórmulas de las páginas 17-18 [cite: 226, 228]
-                if (!valorSalvamento || valorSalvamento <= 0) {
-                    throw new Error('El método de Saldos Decrecientes requiere un Valor de Salvamento.');
-                }
-                tablaResultado = calcularSaldosDecrecientes(valorActivo, vidaUtil, valorSalvamento);
-                break;
-            case 'unidadesProduccion':
-                // Basado en las fórmulas de las páginas 21-22 [cite: 279, 289]
-                if (!produccionAnual || !unidadesTotales || produccionAnual.length === 0 || unidadesTotales <= 0) {
-                    throw new Error('El método de Unidades de Producción requiere Unidades Totales y la Producción por año.');
-                }
-                tablaResultado = calcularUnidadesProduccion(valorActivo, unidadesTotales, produccionAnual);
-                break;
-            default:
-                throw new Error('Método no reconocido');
-        }
-        res.json(tablaResultado);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// --- FUNCIONES DE CÁLCULO (Lógica del PDF) ---
-
-function calcularLineaRecta(valorActivo, vidaUtil) {
-    // Fórmula: Depreciacion = Valor del activo / Vida útil [cite: 64]
-    const cuota = valorActivo / vidaUtil;
-    let tabla = [];
-    let depreciacionAcumulada = 0;
-    let valorNeto = valorActivo;
-
-    for (let i = 1; i <= vidaUtil; i++) {
-        depreciacionAcumulada += cuota;
-        valorNeto -= cuota;
-        tabla.push({
-            ano: i,
-            cuota: cuota,
-            acumulada: depreciacionAcumulada,
-            valorNeto: valorNeto
-        });
-    }
-    return tabla;
-}
-
-function calcularSumaDigitos(valorActivo, vidaUtil) {
-    // Fórmula Suma: [VidaUtil * (VidaUtil + 1)] / 2 [cite: 127]
-    const sumaDigitos = (vidaUtil * (vidaUtil + 1)) / 2;
-    let tabla = [];
-    let depreciacionAcumulada = 0;
-    let valorNeto = valorActivo;
-
-    for (let i = 0; i < vidaUtil; i++) {
-        const vidaRestante = vidaUtil - i;
-        // Fórmula Factor: (Vida útil restante / Suma de digitos) [cite: 129]
-        const factor = vidaRestante / sumaDigitos;
-        const cuota = factor * valorActivo; // [cite: 126]
-        
-        depreciacionAcumulada += cuota;
-        valorNeto -= cuota;
-        
-        tabla.push({
-            ano: i + 1,
-            factor: factor,       // <-- NUEVO: Enviamos el factor
-            porcentaje: factor,   // <-- NUEVO: Enviamos el factor (que se convertirá en %)
-            cuota: cuota,
-            acumulada: depreciacionAcumulada,
-            valorNeto: (i === vidaUtil - 1) ? 0 : valorNeto
-        });
-    }
-    return tabla;
-}
-
-function calcularSaldosDecrecientes(valorActivo, vidaUtil, valorSalvamento) {
-    // Tasa = 1 - (ValorSalvamento / ValorActivo)^(1/n) [cite: 228, 240]
-    const tasa = 1 - Math.pow(valorSalvamento / valorActivo, 1 / vidaUtil);
-    let tabla = [];
-    let depreciacionAcumulada = 0;
-    let valorNeto = valorActivo;
-
-    for (let i = 1; i <= vidaUtil; i++) {
-        const valorSinDepreciar = valorNeto; // Captura el valor al inicio del año
-        let cuota;
-
-        if (i < vidaUtil) {
-            cuota = valorSinDepreciar * tasa;
-        } else {
-            // El último año se ajusta para llegar exactamente al valor de salvamento 
-            cuota = valorSinDepreciar - valorSalvamento;
-        }
-
-        depreciacionAcumulada += cuota;
-        valorNeto -= cuota;
-
-        tabla.push({
-            ano: i,
-            tasa: tasa, // <-- NUEVO: Tasa de depreciación
-            valorSinDepreciar: valorSinDepreciar, // <-- NUEVO: Valor al inicio del periodo
-            cuota: cuota,
-            acumulada: depreciacionAcumulada,
-            valorNeto: valorNeto
-        });
-    }
-    return tabla;
-}
-
-function calcularUnidadesProduccion(valorActivo, unidadesTotales, produccionAnual) {
-    // Depreciación por unidad = Valor del activo / Unidades totales [cite: 289]
-    const costoPorUnidad = valorActivo / unidadesTotales;
-    let tabla = [];
-    let depreciacionAcumulada = 0;
-    let valorNeto = valorActivo;
+    const camposUnidades = document.getElementById('campos-unidades');
+    const unidadesTotalesInput = document.getElementById('unidadesTotales');
+    const produccionAnualInput = document.getElementById('produccionAnual');
     
-    for (let i = 0; i < produccionAnual.length; i++) {
-        const unidadesProducidas = produccionAnual[i];
-        // Cuota = Unidades producidas * Costo por unidad [cite: 291]
-        const cuota = unidadesProducidas * costoPorUnidad;
+    const resultadoDiv = document.getElementById('resultado-tabla');
+    const tituloTabla = document.getElementById('titulo-tabla');
+    const errorDiv = document.getElementById('error-mensaje');
 
-        depreciacionAcumulada += cuota;
-        valorNeto -= cuota;
+    let currentMetodo = '';
 
-        tabla.push({
-            ano: i + 1,
-            unidades: unidadesProducidas,
-            costoPorUnidad: costoPorUnidad, // <-- NUEVO: Depreciación por unidad
-            cuota: cuota,
-            acumulada: depreciacionAcumulada,
-            valorNeto: (valorNeto < 0.001 && valorNeto > -0.001) ? 0 : valorNeto // Asegura que el final sea 0
-        });
+    const nombresMetodos = {
+        lineaRecta: "Línea Recta",
+        sumaDigitos: "Suma de los Dígitos del Año",
+        saldosDecrecientes: "Reducción de Saldos",
+        unidadesProduccion: "Unidades de Producción"
+    };
+    function limpiarNumero(string) {
+        if (!string || typeof string !== 'string') return NaN;
+        const numeroLimpio = string.replace(/\./g, '').replace(/,/g, '.');
+        return parseFloat(numeroLimpio);
     }
-    return tabla;
-}
 
+    metodoSelector.addEventListener('click', (event) => {
+        const card = event.target.closest('.card');
+        if (card) {
+            currentMetodo = card.dataset.metodo;
+            metodoSeleccionadoHidden.value = currentMetodo;
+            metodoTitulo.textContent = `Calcular por ${nombresMetodos[currentMetodo]}`;
+            mostrarCalculadora(currentMetodo);
+        }
+    });
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    backButton.addEventListener('click', () => {
+        form.reset();
+        resultadoDiv.innerHTML = '';
+        tituloTabla.classList.add('hidden');
+        errorDiv.innerHTML = '';
+        calculadoraSection.classList.add('hidden');
+        metodoSelector.classList.remove('hidden');
+    });
+
+    function mostrarCalculadora(metodo) {
+        metodoSelector.classList.add('hidden');
+        calculadoraSection.classList.remove('hidden');
+
+        groupValorSalvamento.classList.add('hidden');
+        valorSalvamentoInput.removeAttribute('required');
+        camposUnidades.classList.add('hidden');
+        unidadesTotalesInput.removeAttribute('required');
+        produccionAnualInput.removeAttribute('required');
+
+        if (metodo === 'saldosDecrecientes') {
+            groupValorSalvamento.classList.remove('hidden');
+            valorSalvamentoInput.setAttribute('required', 'true');
+        } else if (metodo === 'unidadesProduccion') {
+            camposUnidades.classList.remove('hidden');
+            unidadesTotalesInput.setAttribute('required', 'true');
+            produccionAnualInput.setAttribute('required', 'true');
+        }
+    }
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        resultadoDiv.innerHTML = '';
+        errorDiv.innerHTML = '';
+        tituloTabla.classList.add('hidden');
+
+        const valorActivo = limpiarNumero(valorActivoInput.value);
+        const vidaUtil = parseInt(limpiarNumero(vidaUtilInput.value)); // Vida útil es un entero
+        const valorSalvamento = limpiarNumero(valorSalvamentoInput.value) || 0;
+        
+        const unidadesTotales = limpiarNumero(unidadesTotalesInput.value);
+        const produccionAnualStr = produccionAnualInput.value;
+        
+        const produccionAnual = produccionAnualStr.split(',')
+                                    .map(item => limpiarNumero(item.trim())) 
+                                    .filter(num => !isNaN(num) && num > 0);
+        
+        if (isNaN(valorActivo) || valorActivo <= 0) {
+             errorDiv.textContent = 'Por favor, introduce un Valor de Activo válido.';
+             return;
+        }
+        if (isNaN(vidaUtil) || vidaUtil <= 0) {
+             errorDiv.textContent = 'Por favor, introduce una Vida Útil válida.';
+             return;
+        }
+
+        if (currentMetodo === 'saldosDecrecientes' && (isNaN(valorSalvamento) || valorSalvamento <= 0)) {
+            errorDiv.textContent = 'El Valor de Salvamento es requerido y debe ser mayor a 0 para Reducción de Saldos.';
+            return;
+        }
+        if (currentMetodo === 'unidadesProduccion') {
+            if (isNaN(unidadesTotales) || unidadesTotales <= 0) {
+                errorDiv.textContent = 'La Capacidad Total es requerida y debe ser mayor a 0.';
+                return;
+            }
+            if (produccionAnual.length === 0) {
+                errorDiv.textContent = 'La Producción por Año es requerida. Ej: 2.000, 2.500';
+                return;
+            }
+        }
+        
+        try {
+            const response = await fetch('/calcular', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    metodo: currentMetodo,
+                    valorActivo,
+                    vidaUtil,
+                    valorSalvamento,
+                    produccionAnual,
+                    unidadesTotales
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Error en el cálculo');
+            }
+
+            mostrarTabla(data, currentMetodo);
+
+        } catch (error) {
+            errorDiv.textContent = error.message;
+        }
+    });
+
+    function mostrarTabla(data, metodo) {
+        tituloTabla.classList.remove('hidden');
+
+        let headers = ['Año'];
+        
+        if (metodo === 'sumaDigitos') {
+            headers.push('Factor', 'Porcentaje');
+        } else if (metodo === 'saldosDecrecientes') {
+            headers.push('Tasa Depreciación', 'Valor sin Depreciar');
+        } else if (metodo === 'unidadesProduccion') {
+            headers.push('Unidades Producidas', 'Depreciación por Unidad');
+        }
+        
+        headers.push('Cuota Depreciación', 'Depreciación Acumulada', 'Valor Neto en Libros');
+
+        // Formateadores para 'es-EC' (Puntos para miles, coma para decimal)
+        const formatterMoneda = new Intl.NumberFormat('es-EC', {
+            style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2,
+        });
+        const formatterPorcentaje = new Intl.NumberFormat('es-EC', {
+            style: 'percent', minimumFractionDigits: 5, maximumFractionDigits: 5
+        });
+        const formatterFactor = new Intl.NumberFormat('es-EC', {
+            style: 'decimal', minimumFractionDigits: 10, maximumFractionDigits: 10
+        });
+        const formatterTasa = new Intl.NumberFormat('es-EC', {
+            style: 'decimal', minimumFractionDigits: 5, maximumFractionDigits: 5
+        });
+        const formatterUnidad = new Intl.NumberFormat('es-EC', { 
+            style: 'decimal', maximumFractionDigits: 0
+        });
+
+        let tableHTML = '<table><thead><tr>';
+        headers.forEach(header => {
+            tableHTML += `<th>${header}</th>`;
+        });
+        tableHTML += '</tr></thead><tbody>';
+
+        data.forEach(row => {
+            tableHTML += '<tr>';
+            tableHTML += `<td>${row.ano}</td>`;
+
+            if (metodo === 'sumaDigitos') {
+                tableHTML += `<td>${formatterFactor.format(row.factor)}</td>`;
+                tableHTML += `<td>${formatterPorcentaje.format(row.porcentaje)}</td>`;
+            } else if (metodo === 'saldosDecrecientes') {
+                tableHTML += `<td>${formatterTasa.format(row.tasa)}</td>`;
+                tableHTML += `<td>${formatterMoneda.format(row.valorSinDepreciar)}</td>`;
+            } else if (metodo === 'unidadesProduccion') {
+                tableHTML += `<td>${formatterUnidad.format(row.unidades)}</td>`;
+                tableHTML += `<td>${formatterUnidad.format(row.costoPorUnidad)}</td>`; 
+            }
+
+            tableHTML += `<td>${formatterMoneda.format(row.cuota)}</td>`;
+            tableHTML += `<td>${formatterMoneda.format(row.acumulada)}</td>`;
+            
+            const valorNetoFormateado = (row.valorNeto < 0.001 && row.valorNeto > -0.001) ? 0.00 : row.valorNeto;
+            tableHTML += `<td>${formatterMoneda.format(valorNetoFormateado)}</td>`;
+            
+            tableHTML += '</tr>';
+        });
+
+        tableHTML += '</tbody></table>';
+        resultadoDiv.innerHTML = tableHTML;
+    }
 });
