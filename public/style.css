@@ -163,4 +163,23 @@ main {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-/* ... resto de tu CSS existente ... */
+.button-group {
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 20px; /* Espacio arriba de los botones */
+}
+
+.button-group button {
+    flex: 1; /* Hace que ambos botones compartan el espacio por igual */
+    padding: 10px 15px; /* Asegura que tengan el mismo tamaño */
+}
+
+/* Estilo para el nuevo botón de limpiar */
+.clear-button {
+    background-color: #6c757d; /* Un color gris secundario */
+    color: white;
+}
+
+.clear-button:hover {
+    background-color: #5a6268;
+}
