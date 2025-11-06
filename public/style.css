@@ -1,0 +1,166 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+h1 {
+    color: #0056b3; /* Un azul similar al de la FICM */
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Importante para que el padding no afecte el ancho */
+}
+button {
+    background-color: #d9534f; /* Un rojo similar al de la UTA */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+button:hover {
+    background-color: #c9302c;
+}
+
+/* Estilos para la tabla de resultados */
+#resultado-tabla {
+    margin-top: 20px;
+    overflow-x: auto; /* Para tablas anchas en móviles */
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: right;
+}
+th {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+td:first-child {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Clases de utilidad */
+.hidden {
+    display: none;
+}
+.error {
+    color: #d9534f;
+    font-weight: bold;
+    margin-top: 10px;
+}
+/* --- NUEVOS ESTILOS PARA LA PANTALLA DE SELECCIÓN --- */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 2 columnas en pantallas medianas, 1 en pequeñas */
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+    margin-bottom: 15px;
+    /* Para que el icono SVG se vea grande y centrado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card h3 {
+    color: #0056b3;
+    margin-top: 10px;
+    margin-bottom: 8px;
+    font-size: 1.4em;
+}
+
+.card p {
+    color: #666;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+/* Estilos para el botón de volver */
+.back-button {
+    background-color: #6c757d; /* Gris para un botón secundario */
+    margin-bottom: 20px;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
+/* --- FIN NUEVOS ESTILOS --- */
+
+/* Asegúrate de que .hidden está definido si no lo está */
+.hidden {
+    display: none !important;
+}
+
+/* Estilos existentes (asegúrate de que no se pisen con los nuevos) */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+main {
+    max-width: 800px; /* Mantener el ancho para la calculadora */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+/* ... resto de tu CSS existente ... */
