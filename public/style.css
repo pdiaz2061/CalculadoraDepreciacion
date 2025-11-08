@@ -183,3 +183,327 @@ main {
 .clear-button:hover {
     background-color: #5a6268;
 }
+/* --- NUEVOS ESTILOS PARA LOS BOTONES DE RADIO --- */
+.radio-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+}
+
+.radio-group input[type="radio"] {
+    /* Oculta el botón de radio por defecto */
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+.radio-group label {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 0; /* Anula el margin-bottom por defecto de los labels */
+}
+
+/* Estilo del botón cuando está seleccionado */
+.radio-group input[type="radio"]:checked + label {
+    background-color: #d9534f; /* Color rojo de la UTA */
+    color: white;
+    border-color: #d9534f;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Estilo al pasar el mouse */
+.radio-group label:hover {
+    background-color: #f4f4f4;
+}
+
+.radio-group input[type="radio"]:checked + label:hover {
+    background-color: #c9302c;
+}
+/* === NUEVAS PÁGINAS === */
+
+.center {
+  text-align: center;
+}
+
+.btn {
+  background-color: #d9534f;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  margin: 5px;
+  display: inline-block;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #c9302c;
+}
+
+.btn.secondary {
+  background-color: #6c757d;
+}
+
+.btn.secondary:hover {
+  background-color: #5a6268;
+}
+/* --- ESTILOS PARA EL INTERRUPTOR DE IVA --- */
+.iva-toggle {
+    grid-area: toggle; /* Asignamos un área en el grid */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Lo alinea a la derecha */
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.iva-toggle label {
+    font-weight: 500;
+    font-size: 0.9em;
+    color: #333;
+}
+
+/* --- Modificación del .iva-group --- */
+.iva-group {
+    background-color: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    
+    display: grid;
+    /* NUEVO GRID CON ÁREA PARA EL TOGGLE */
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+        "toggle toggle"      /* El interruptor ocupa toda la fila superior */
+        "sin-iva con-iva"
+        "pct-iva pct-iva"
+        "display-iva display-iva";
+    gap: 10px 15px;
+}
+
+/* Asignación de áreas (sin cambios) */
+.iva-group .form-group:nth-child(2) { grid-area: sin-iva; }
+.iva-group .form-group:nth-child(3) { grid-area: con-iva; }
+.iva-group .form-group:nth-child(4) { grid-area: pct-iva; }
+.iva-group .iva-display { grid-area: display-iva; }
+
+/* Estilos para campos deshabilitados (solo lectura) */
+input[readonly] {
+    background-color: #f4f4f4;
+    cursor: not-allowed;
+    color: #777;
+    border-color: #ddd;
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 600px) {
+    .iva-group {
+        grid-template-columns: 1fr; /* Una columna */
+        grid-template-areas: 
+            "toggle"
+            "sin-iva"
+            "con-iva"
+            "pct-iva"
+            "display-iva";
+    }
+    
+    .iva-toggle {
+        justify-content: center; /* Centra el interruptor en móviles */
+    }
+}
+/* --- ESTILOS PARA LOS CAMPOS DINÁMICOS DE PRODUCCIÓN --- */
+#dynamic-production-fields {
+    padding-left: 20px;
+    border-left: 3px solid #f0f0f0;
+    margin-top: 15px;
+}
+
+/* Esto hace que el label y el input de cada campo dinámico
+  se vean igual que los otros campos del formulario.
+*/
+.dynamic-field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px; /* Espacio entre cada campo de período */
+}
+
+.dynamic-field-group label {
+    font-weight: 500;
+    color: #555;
+    text-align: right;
+    padding-right: 10px;
+    margin-bottom: 0; /* Anula el estilo de form-group */
+}
+
+.dynamic-field-group input {
+    width: 100%;
+    box-sizing: border-box; /* Asegura que el padding no rompa el layout */
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 600px) {
+    .dynamic-field-group {
+        grid-template-columns: 1fr; /* Una columna */
+        gap: 5px;
+    }
+    .dynamic-field-group label {
+        text-align: left; /* Alinea a la izquierda en móviles */
+        padding-right: 0;
+    }
+}
+/* --- ESTILO PARA EL BOTÓN DE AUTOCOMPLETAR --- */
+.form-group-action {
+    margin-bottom: 15px; /* Espacio antes de que aparezcan los campos */
+    text-align: right; /* Alinea el botón a la derecha */
+}
+
+.autofill-button {
+    background-color: #007bff; /* Un color azul */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+
+.autofill-button:hover {
+    background-color: #0056b3;
+}
+/* --- ESTILOS PARA LOS CAMPOS DINÁMICOS DE PRODUCCIÓN --- */
+#dynamic-production-fields {
+    padding-left: 20px;
+    border-left: 3px solid #f0f0f0;
+    margin-top: 15px;
+}
+
+/* MODIFICADO: Grid de 3 columnas: Label, Input, Botón */
+.dynamic-field-group {
+    display: grid;
+    /* 1fr para el label, 1fr para el input, auto para el botón */
+    grid-template-columns: 1fr 1fr auto; 
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.dynamic-field-group label {
+    font-weight: 500;
+    color: #555;
+    text-align: right;
+    padding-right: 10px;
+    margin-bottom: 0;
+}
+
+.dynamic-field-group input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* NUEVO: Estilo para el botón de autocompletar en cada fila */
+.autofill-row-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2em; /* Ícono más grande */
+    font-weight: bold;
+    padding: 6px 10px; /* Ajusta el padding */
+    line-height: 1;
+    transition: background-color 0.2s;
+}
+
+.autofill-row-button:hover {
+    background-color: #0056b3;
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 600px) {
+    .dynamic-field-group {
+        /* Volvemos a 1 columna y ponemos el botón debajo */
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    .dynamic-field-group label {
+        text-align: left;
+        padding-right: 0;
+    }
+    
+    /* Le decimos al botón que ocupe toda la fila */
+    .autofill-row-button {
+        grid-row: 3; /* Se pone en la tercera "fila" del grid de 1 columna */
+        width: 100%;
+    }
+}
+/* --- ESTILOS PARA EL CAMPO DE SALVAMENTO ($ / %) --- */
+
+/* Contenedor para el input y los botones */
+.input-with-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* El input ahora es flexible */
+.input-with-toggle input {
+    flex: 1; /* Ocupa el espacio restante */
+    min-width: 0; /* Necesario para que flex funcione bien */
+}
+
+/* Grupo de botones en línea (reutiliza el estilo de .radio-group) */
+.radio-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.radio-group-inline input[type="radio"] {
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+.radio-group-inline label {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    margin-bottom: 0;
+    line-height: 1; /* Asegura que el texto esté centrado */
+}
+
+.radio-group-inline input[type="radio"]:checked + label {
+    background-color: #007bff; /* Un azul para diferenciarlo */
+    color: white;
+    border-color: #007bff;
+}
+
+.radio-group-inline label:hover {
+    background-color: #f4f4f4;
+}
+
+.radio-group-inline input[type="radio"]:checked + label:hover {
+    background-color: #0056b3;
+}
