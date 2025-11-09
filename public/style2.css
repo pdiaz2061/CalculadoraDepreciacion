@@ -1,0 +1,104 @@
+/* --- ESTRUCTURA DE PÁGINA COMPLETA --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+body {
+    display: flex;
+    flex-direction: column; /* Apila header, main, y footer-nav verticalmente */
+    min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+main {
+    flex: 1; /* ¡Esta es la clave! Empuja el footer hacia abajo */
+    
+    /* Centra el contenido (las tarjetas o el formulario) */
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    color: #0056b3; /* Un azul similar al de la FICM */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px 0; /* Añade padding vertical */
+}
+.button-group-2 {
+    display: flex;
+    gap: 20px;
+    justify-content: center; /* Centra los botones */
+    padding: 10px; /* Padding reducido */
+    margin-top: 15px; /* Espacio sobre los botones */
+    margin-bottom: 10px; /* Espacio bajo los botones */
+}
+
+.btn_2 {
+    text-decoration: none;
+    padding: 10px 20px; /* Botones más pequeños */
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    background-color: #d9534f;
+    transition: background-color 0.2s;
+}
+
+.btn_2:hover {
+    background-color: #c9302c;
+}
+
+.btn_secondary_2 {
+    text-decoration: none;
+    padding: 10px 20px; /* Botones más pequeños */
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.2s;
+    background-color: #6c757d;
+}
+
+.btn_secondary_2:hover {
+    background-color: #5a6268;
+}
+/* --- ESTILOS PARA LA PÁGINA DE CONCLUSIONES --- */
+
+/* La regla 'ul' aplica a todas las listas */
+ul {
+    padding-left: 20px; /* Añade un espacio a la izquierda para los puntos */
+}
+
+/* Esta es la regla clave que pediste.
+  Aplica la justificación de texto a cada 'li' (ítem de la lista).
+*/
+ul li {
+    text-align: justify; /* ¡AQUÍ ESTÁ LA MAGIA! */
+    margin-bottom: 15px; /* Espacio entre cada punto */
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+/* Estilo para el título de la sección */
+h2 {
+    color: #004a99; /* Azul */
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}

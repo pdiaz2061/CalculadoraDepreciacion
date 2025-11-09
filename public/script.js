@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const metodoTitulo = document.getElementById('metodo-titulo');
     const metodoSeleccionadoHidden = document.getElementById('metodo-seleccionado-hidden');
 
+    // --- NUEVO ELEMENTO ---
+    const footerNav = document.querySelector('.footer-nav'); // El contenedor de los botones inferiores
+
     const form = document.getElementById('calculadora-form');
     
     // --- ELEMENTOS DE IVA ---
@@ -18,10 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const vidaUtilInput = document.getElementById('vidaUtil');
     
-    // --- ELEMENTOS DE SALVAMENTO (MODIFICADOS) ---
+    // --- ELEMENTOS DE SALVAMENTO ---
     const groupValorSalvamento = document.getElementById('group-valorSalvamento');
     const valorSalvamentoInput = document.getElementById('valorSalvamento');
-    // El 'required' se manejará dinámicamente
 
     // --- ELEMENTOS DE UNIDADES DE PRODUCCIÓN ---
     const camposUnidades = document.getElementById('campos-unidades');
@@ -34,8 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDiv = document.getElementById('error-mensaje');
     
     const clearButton = document.getElementById('clear-button');
-
+    const exportExcelButton = document.getElementById('export-excel-button');
+    
     let currentMetodo = '';
+    let rawTableData = []; 
 
     const nombresMetodos = {
         lineaRecta: "Línea Recta",
@@ -71,19 +75,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Nueva función para formatear decimales o porcentajes
     function formatearInputDecimal(event) {
         let input = event.target;
         let valor = input.value;
-        // Permite números y una coma (que se tratará como punto)
         let valorLimpio = valor.replace(/\./g, '').replace(/,/g, '.');
         valorLimpio = valorLimpio.replace(/[^\d.]/g, '');
-        // Lógica para asegurar solo un punto decimal
         let partes = valorLimpio.split('.');
         if (partes.length > 2) {
             valorLimpio = partes[0] + '.' + partes.slice(1).join('');
         }
-        input.value = valorLimpio; // Muestra el valor limpio (ej: 10.5)
+        input.value = valorLimpio;
     }
 
 
@@ -173,6 +174,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- FUNCIÓN DE EXPORTAR A EXCEL ---
+    function exportarAExcel() {
+        if (rawTableData.length === 0) {
+            errorDiv.textContent = 'No hay datos para exportar.';
+            return;
+        }
+
+        const unidadVidaUtil = document.querySelector('input[name="unidadVidaUtil"]:checked').value;
+        let unidadHeader = 'Período';
+        if (currentMetodo !== 'unidadesProduccion') {
+             if (unidadVidaUtil === 'anos') { unidadHeader = 'Año'; }
+             else if (unidadVidaUtil === 'meses') { unidadHeader = 'Mes'; }
+             else if (unidadVidaUtil === 'dias') { unidadHeader = 'Día'; }
+        }
+
+        let headers = [unidadHeader];
+        if (currentMetodo === 'sumaDigitos') { headers.push('Factor', 'Porcentaje'); }
+        else if (currentMetodo === 'saldosDecrecientes') { headers.push('Tasa Depreciación', 'Valor sin Depreciar'); }
+        else if (currentMetodo === 'unidadesProduccion') { headers.push('Unidades Producidas', 'Depreciación por Unidad'); }
+        headers.push('Cuota Depreciación', 'Depreciación Acumulada', 'Valor Neto en Libros');
+        
+        const dataParaExportar = rawTableData.map(row => {
+            let newRow = {};
+            newRow[unidadHeader] = row.ano;
+            
+            if (currentMetodo === 'sumaDigitos') {
+                newRow['Factor'] = row.factor;
+                newRow['Porcentaje'] = row.porcentaje;
+            } else if (currentMetodo === 'saldosDecrecientes') {
+                newRow['Tasa Depreciación'] = row.tasa;
+                newRow['Valor sin Depreciar'] = row.valorSinDepreciar;
+            } else if (currentMetodo === 'unidadesProduccion') {
+                newRow['Unidades Producidas'] = row.unidades;
+                newRow['Depreciación por Unidad'] = row.costoPorUnidad;
+            }
+            
+            newRow['Cuota Depreciación'] = row.cuota;
+            newRow['Depreciación Acumulada'] = row.acumulada;
+            newRow['Valor Neto en Libros'] = row.valorNeto;
+            
+            return newRow;
+        });
+
+        const ws = XLSX.utils.json_to_sheet(dataParaExportar, { header: headers });
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Depreciacion");
+        XLSX.writeFile(wb, "Calculo_Depreciacion.xlsx");
+    }
+    exportExcelButton.addEventListener('click', exportarAExcel);
+
+
     // --- NAVEGACIÓN ---
     metodoSelector.addEventListener('click', (event) => {
         const card = event.target.closest('.card');
@@ -184,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- MODIFICADO ---
     backButton.addEventListener('click', () => {
         form.reset();
         // Reset manual
@@ -195,26 +248,27 @@ document.addEventListener('DOMContentLoaded', () => {
         montoIVADisplay.textContent = '';
         porcentajeIVAInput.value = '15';
         dynamicFieldsContainer.innerHTML = '';
-        document.getElementById('salvamento-val').checked = true; // Resetea radio de salvamento
+        document.getElementById('salvamento-val').checked = true;
         
         resultadoDiv.innerHTML = '';
         tituloTabla.classList.add('hidden');
         errorDiv.innerHTML = '';
+        exportExcelButton.classList.add('hidden');
+        rawTableData = [];
+        
         calculadoraSection.classList.add('hidden');
         metodoSelector.classList.remove('hidden');
+        
+        footerNav.classList.remove('hidden'); // <-- MUESTRA LOS BOTONES
     });
     
-    // --- LÓGICA DE MOSTRAR CALCULADORA (MODIFICADA) ---
+    // --- LÓGICA DE MOSTRAR CALCULADORA (MODIFICADO) ---
     function mostrarCalculadora(metodo) {
         metodoSelector.classList.add('hidden');
         calculadoraSection.classList.remove('hidden');
         
-        // --- MODIFICACIÓN ---
-        // El campo de salvamento ahora se muestra para todos
-        groupValorSalvamento.classList.remove('hidden');
-        // --- FIN MODIFICACIÓN ---
+        footerNav.classList.add('hidden'); // <-- OCULTA LOS BOTONES
         
-        // Oculta/muestra campos de Unidades de Producción
         if (metodo === 'unidadesProduccion') {
             camposUnidades.classList.remove('hidden');
             unidadesTotalesInput.setAttribute('required', 'true');
@@ -225,29 +279,25 @@ document.addEventListener('DOMContentLoaded', () => {
             numPeriodosInput.removeAttribute('required');
         }
         
-        // Lógica de 'required' para salvamento
         if (metodo === 'saldosDecrecientes') {
-            // Es requerido para este método
+            groupValorSalvamento.classList.remove('hidden'); 
             valorSalvamentoInput.setAttribute('required', 'true');
         } else {
-            // Es opcional para los otros
+            groupValorSalvamento.classList.add('hidden'); 
             valorSalvamentoInput.removeAttribute('required');
         }
     }
 
     // --- EVENT LISTENERS (FORMATEO Y CÁLCULO) ---
     
-    // Formateadores de enteros
     vidaUtilInput.addEventListener('input', formatearInputSimple);
     unidadesTotalesInput.addEventListener('input', formatearInputSimple);
     numPeriodosInput.addEventListener('input', formatearInputSimple); 
     numPeriodosInput.addEventListener('input', generarCamposProduccion); 
     
-    // Formateador de decimal/entero
     valorSalvamentoInput.addEventListener('input', formatearInputDecimal);
-    porcentajeIVAInput.addEventListener('input', formatearInputDecimal); // También para el IVA
+    porcentajeIVAInput.addEventListener('input', formatearInputDecimal);
     
-    // Lógica de IVA
     ivaToggle.addEventListener('change', () => {
         if (ivaToggle.checked) {
             valorConIVAInput.readOnly = false;
@@ -267,123 +317,113 @@ document.addEventListener('DOMContentLoaded', () => {
     valorConIVAInput.addEventListener('input', calcularIVA);
     porcentajeIVAInput.addEventListener('input', calcularIVA);
 
-    // --- MANEJO DEL 'SUBMIT' (MODIFICADO) ---
-    // --- MANEJO DEL 'SUBMIT' (AQUÍ ESTÁ LA CORRECCIÓN) ---
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
+    // --- MANEJO DEL 'SUBMIT' ---
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-    resultadoDiv.innerHTML = '';
-    errorDiv.innerHTML = '';
-    tituloTabla.classList.add('hidden');
+        resultadoDiv.innerHTML = '';
+        errorDiv.innerHTML = '';
+        tituloTabla.classList.add('hidden');
+        exportExcelButton.classList.add('hidden');
+        rawTableData = [];
 
-    // RECOLECCIÓN DE DATOS
-    let valorActivo;
-    if (ivaToggle.checked) {
-        // MODO: Calcular con Valor Total (con IVA)
-        valorActivo = limpiarNumero(valorConIVAInput.value);
-    } else {
-        // MODO: Calcular con Valor Base (sin IVA)
-        valorActivo = limpiarNumero(valorSinIVAInput.value);
-    }
-    
-    const valorVidaUtil = limpiarNumero(vidaUtilInput.value);
-    const unidadVidaUtil = document.querySelector('input[name="unidadVidaUtil"]:checked').value;
-    
-    // --- LÓGICA DE CÁLCULO DE SALVAMENTO (CORREGIDA) ---
-    const salvamentoInputVal = limpiarNumero(valorSalvamentoInput.value) || 0;
-    const salvamentoUnidad = document.querySelector('input[name="salvamento-unit"]:checked').value;
-    let valorSalvamentoFinal = 0;
-    
-    if (salvamentoUnidad === 'pct') {
-        // === CORRECIÓN AQUÍ ===
-        // Antes usaba: limpiarNumero(valorSinIVAInput.value)
-        // Ahora usa: valorActivo (que es 5520 o 4800, dependiendo del interruptor)
-        const valorBaseParaPct = valorActivo; 
-        // === FIN DE LA CORRECIÓN ===
-
-        if (isNaN(valorBaseParaPct) || valorBaseParaPct <= 0) {
-            errorDiv.textContent = 'No se puede calcular el % de salvamento sin un Valor de Activo válido.';
+        // RECOLECCIÓN DE DATOS
+        let valorActivo;
+        if (ivaToggle.checked) {
+            valorActivo = limpiarNumero(valorConIVAInput.value);
+        } else {
+            valorActivo = limpiarNumero(valorSinIVAInput.value);
+        }
+        
+        const valorVidaUtil = limpiarNumero(vidaUtilInput.value);
+        const unidadVidaUtil = document.querySelector('input[name="unidadVidaUtil"]:checked').value;
+        
+        const salvamentoInputVal = limpiarNumero(valorSalvamentoInput.value) || 0;
+        const salvamentoUnidad = document.querySelector('input[name="salvamento-unit"]:checked').value;
+        let valorSalvamentoFinal = 0;
+        
+        if (salvamentoUnidad === 'pct') {
+            const valorBaseParaPct = valorActivo; 
+            if (isNaN(valorBaseParaPct) || valorBaseParaPct <= 0) {
+                errorDiv.textContent = 'No se puede calcular el % de salvamento sin un Valor de Activo válido.';
+                return;
+            }
+            valorSalvamentoFinal = valorBaseParaPct * (salvamentoInputVal / 100);
+        } else {
+            valorSalvamentoFinal = salvamentoInputVal;
+        }
+        
+        const unidadesTotales = limpiarNumero(unidadesTotalesInput.value);
+        const produccionAnualInputs = document.querySelectorAll('.produccion-periodo-input');
+        const produccionAnual = [];
+        produccionAnualInputs.forEach(input => {
+            const valor = limpiarNumero(input.value);
+            if (!isNaN(valor)) {
+                produccionAnual.push(valor);
+            }
+        });
+        
+        // VALIDACIONES
+        const vidaEnAnos = convertirAAnos(valorVidaUtil, unidadVidaUtil);
+        if (vidaEnAnos > 15) {
+            errorDiv.textContent = 'Tiempo excedido. El máximo permitido es 15 años (o su equivalente).';
             return;
         }
-        valorSalvamentoFinal = valorBaseParaPct * (salvamentoInputVal / 100);
-    } else {
-        // Es un valor en $
-        valorSalvamentoFinal = salvamentoInputVal;
-    }
-    // --- FIN DE LÓGICA DE SALVAMENTO ---
-    
-    
-    const unidadesTotales = limpiarNumero(unidadesTotalesInput.value);
-    const produccionAnualInputs = document.querySelectorAll('.produccion-periodo-input');
-    const produccionAnual = [];
-    produccionAnualInputs.forEach(input => {
-        const valor = limpiarNumero(input.value);
-        if (!isNaN(valor)) {
-            produccionAnual.push(valor);
+        if (isNaN(valorActivo) || valorActivo <= 0) {
+             errorDiv.textContent = 'El Valor de Activo seleccionado debe ser un número válido mayor a 0.';
+             return;
+        }
+        if (isNaN(valorVidaUtil) || valorVidaUtil <= 0) {
+             errorDiv.textContent = 'Por favor, introduce una Vida Útil válida.';
+             return;
+        }
+        
+        if (currentMetodo === 'saldosDecrecientes' && (isNaN(valorSalvamentoFinal) || valorSalvamentoFinal <= 0)) {
+            errorDiv.textContent = 'Saldos Decrecientes requiere un Valor de Salvamento mayor a 0 (calculado en $).';
+            return;
+        }
+        if (currentMetodo === 'unidadesProduccion') {
+            if (isNaN(unidadesTotales) || unidadesTotales <= 0) {
+                errorDiv.textContent = 'La Capacidad Total es requerida y debe ser mayor a 0.';
+                return;
+            }
+            if (produccionAnual.length === 0 || produccionAnual.length !== limpiarNumero(numPeriodosInput.value)) {
+                errorDiv.textContent = 'Por favor, ingrese un valor para todos los períodos de producción generados.';
+                return;
+            }
+        }
+
+        // ENVÍO AL BACKEND
+        try {
+            const response = await fetch('/calcular', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    metodo: currentMetodo,
+                    valorActivo: valorActivo,
+                    vidaUtil: valorVidaUtil,
+                    valorSalvamento: valorSalvamentoFinal,
+                    produccionAnual: produccionAnual,
+                    unidadesTotales: unidadesTotales
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) { throw new Error(data.error || 'Error en el cálculo'); }
+            
+            rawTableData = data; 
+            mostrarTabla(data, currentMetodo, unidadVidaUtil);
+
+        } catch (error) {
+            errorDiv.textContent = error.message;
         }
     });
-    
-    // VALIDACIONES
-    const vidaEnAnos = convertirAAnos(valorVidaUtil, unidadVidaUtil);
-    if (vidaEnAnos > 15) {
-        errorDiv.textContent = 'Tiempo excedido. El máximo permitido es 15 años (o su equivalente).';
-        return;
-    }
-    if (isNaN(valorActivo) || valorActivo <= 0) {
-         errorDiv.textContent = 'El Valor de Activo seleccionado debe ser un número válido mayor a 0.';
-         return;
-    }
-    if (isNaN(valorVidaUtil) || valorVidaUtil <= 0) {
-         errorDiv.textContent = 'Por favor, introduce una Vida Útil válida.';
-         return;
-    }
-    
-    if (currentMetodo === 'saldosDecrecientes' && (isNaN(valorSalvamentoFinal) || valorSalvamentoFinal <= 0)) {
-        errorDiv.textContent = 'Saldos Decrecientes requiere un Valor de Salvamento mayor a 0 (calculado en $).';
-        return;
-    }
-    if (currentMetodo === 'unidadesProduccion') {
-        if (isNaN(unidadesTotales) || unidadesTotales <= 0) {
-            errorDiv.textContent = 'La Capacidad Total es requerida y debe ser mayor a 0.';
-            return;
-        }
-        if (produccionAnual.length === 0 || produccionAnual.length !== limpiarNumero(numPeriodosInput.value)) {
-            errorDiv.textContent = 'Por favor, ingrese un valor para todos los períodos de producción generados.';
-            return;
-        }
-    }
-
-    // ENVÍO AL BACKEND
-    try {
-        const response = await fetch('/calcular', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                metodo: currentMetodo,
-                valorActivo: valorActivo, // Se envía el valor con o sin IVA
-                vidaUtil: valorVidaUtil,
-                valorSalvamento: valorSalvamentoFinal, // Se envía el valor en $
-                produccionAnual: produccionAnual,
-                unidadesTotales: unidadesTotales
-            }),
-        });
-
-        const data = await response.json();
-        if (!response.ok) { throw new Error(data.error || 'Error en el cálculo'); }
-        
-        mostrarTabla(data, currentMetodo, unidadVidaUtil);
-
-    } catch (error) {
-        errorDiv.textContent = error.message;
-    }
-});
-    
 
     // --- FUNCIÓN DE MOSTRAR TABLA ---
     function mostrarTabla(data, metodo, unidad) {
-        // ... (esta función no necesita cambios) ...
         tituloTabla.classList.remove('hidden');
-
+        exportExcelButton.classList.remove('hidden');
+        
         let unidadHeader = 'Período';
         if (unidad === 'anos') { unidadHeader = 'Año'; }
         else if (unidad === 'meses') { unidadHeader = 'Mes'; }
@@ -402,6 +442,11 @@ form.addEventListener('submit', async (event) => {
         const formatterFactor = new Intl.NumberFormat('es-EC', { style: 'decimal', minimumFractionDigits: 10, maximumFractionDigits: 10 });
         const formatterTasa = new Intl.NumberFormat('es-EC', { style: 'decimal', minimumFractionDigits: 5, maximumFractionDigits: 5 });
         const formatterUnidad = new Intl.NumberFormat('es-EC', { style: 'decimal', maximumFractionDigits: 0 });
+        const formatterCostoUnidad = new Intl.NumberFormat('es-EC', {
+            style: 'decimal',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 8
+        });
 
         let tableHTML = '<table><thead><tr>';
         headers.forEach(header => { tableHTML += `<th>${header}</th>`; });
@@ -418,7 +463,7 @@ form.addEventListener('submit', async (event) => {
                 tableHTML += `<td>${formatterMoneda.format(row.valorSinDepreciar)}</td>`;
             } else if (metodo === 'unidadesProduccion') {
                 tableHTML += `<td>${formatterUnidad.format(row.unidades)}</td>`;
-                tableHTML += `<td>${formatterUnidad.format(row.costoPorUnidad)}</td>`; 
+                tableHTML += `<td>${formatterCostoUnidad.format(row.costoPorUnidad)}</td>`; 
             }
             tableHTML += `<td>${formatterMoneda.format(row.cuota)}</td>`;
             tableHTML += `<td>${formatterMoneda.format(row.acumulada)}</td>`;
@@ -431,7 +476,7 @@ form.addEventListener('submit', async (event) => {
         resultadoDiv.innerHTML = tableHTML;
     }
     
-    // --- BOTÓN DE LIMPIAR (Actualizado) ---
+    // --- BOTÓN DE LIMPIAR ---
     clearButton.addEventListener('click', () => {
         form.reset();
         
@@ -454,6 +499,9 @@ form.addEventListener('submit', async (event) => {
         resultadoDiv.innerHTML = '';
         tituloTabla.classList.add('hidden');
         errorDiv.innerHTML = '';
+        exportExcelButton.classList.add('hidden');
+        rawTableData = [];
+        
         valorSinIVAInput.focus();
     });
 });
