@@ -102,3 +102,9 @@ h2 {
     border-bottom: 2px solid #eee;
     padding-bottom: 5px;
 }
+p{
+    text-align: justify;
+    margin-bottom: 15px; /* Espacio entre cada párrafo */
+    font-size: 1.1em;
+    line-height: 1.6;
+}
