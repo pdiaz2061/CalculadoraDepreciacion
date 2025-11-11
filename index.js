@@ -1,5 +1,3 @@
-// ESTE ES EL CÓDIGO CORRECTO Y ACTUALIZADO PARA index.js
-
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -9,7 +7,6 @@ app.use(express.static('public'));
 app.use(express.json());
 
 app.post('/calcular', (req, res) => {
-    // AHORA RECIBIMOS 'valorSalvamento' EN TODAS LAS PETICIONES
     const { metodo, valorActivo, vidaUtil, valorSalvamento, produccionAnual, unidadesTotales } = req.body;
 
     let tablaResultado = [];
@@ -40,9 +37,6 @@ app.post('/calcular', (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-
-// --- FUNCIONES DE CÁLCULO ACTUALIZADAS ---
-
 function calcularLineaRecta(valorActivo, vidaUtil, valorSalvamento) {
     // Lógica actualizada
     const valorADepreciar = valorActivo - valorSalvamento;
@@ -71,7 +65,6 @@ function calcularLineaRecta(valorActivo, vidaUtil, valorSalvamento) {
 }
 
 function calcularSumaDigitos(valorActivo, vidaUtil, valorSalvamento) {
-    // Lógica actualizada
     const valorADepreciar = valorActivo - valorSalvamento;
     const sumaDigitos = (vidaUtil * (vidaUtil + 1)) / 2;
     let tabla = [];
@@ -81,8 +74,6 @@ function calcularSumaDigitos(valorActivo, vidaUtil, valorSalvamento) {
         const vidaRestante = vidaUtil - i;
         const factor = vidaRestante / sumaDigitos;
         let cuota = factor * valorADepreciar;
-        
-        // Ajuste para el último año
         if (i === vidaUtil - 1) {
             const ajuste = (depreciacionAcumulada + cuota) - valorADepreciar;
             cuota -= ajuste;
@@ -104,8 +95,6 @@ function calcularSumaDigitos(valorActivo, vidaUtil, valorSalvamento) {
 }
 
 function calcularSaldosDecrecientes(valorActivo, vidaUtil, valorSalvamento) {
-    // Esta función ya usaba el valor de salvamento para la tasa, por lo que está bien.
-    // Solo nos aseguramos de que el valor neto final sea exactamente el de salvamento.
     const tasa = 1 - Math.pow(valorSalvamento / valorActivo, 1 / vidaUtil);
     let tabla = [];
     let depreciacionAcumulada = 0;
@@ -118,7 +107,6 @@ function calcularSaldosDecrecientes(valorActivo, vidaUtil, valorSalvamento) {
         if (i < vidaUtil) {
             cuota = valorSinDepreciar * tasa;
         } else {
-            // El último año se ajusta para llegar exactamente al valor de salvamento
             cuota = valorSinDepreciar - valorSalvamento;
         }
         
@@ -141,7 +129,6 @@ function calcularSaldosDecrecientes(valorActivo, vidaUtil, valorSalvamento) {
 }
 
 function calcularUnidadesProduccion(valorActivo, unidadesTotales, produccionAnual, valorSalvamento) {
-    // Lógica actualizada
     const valorADepreciar = valorActivo - valorSalvamento;
     const costoPorUnidad = valorADepreciar / unidadesTotales;
     let tabla = [];
@@ -150,16 +137,12 @@ function calcularUnidadesProduccion(valorActivo, unidadesTotales, produccionAnua
     for (let i = 0; i < produccionAnual.length; i++) {
         const unidadesProducidas = produccionAnual[i];
         let cuota = unidadesProducidas * costoPorUnidad;
-        
-        // Ajuste para no depreciar más del total
         if (depreciacionAcumulada + cuota > valorADepreciar) {
             cuota = valorADepreciar - depreciacionAcumulada;
         }
 
         depreciacionAcumulada += cuota;
         let valorNeto = valorActivo - depreciacionAcumulada;
-
-        // Prevenir que la cuota sea negativa
         if (cuota < 0) cuota = 0;
 
         tabla.push({
