@@ -10,8 +10,8 @@ body, html {
 
 body {
     display: flex;
-    flex-direction: column; /* Apila header, main, y footer-nav verticalmente */
-    min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
+    flex-direction: column; 
+    min-height: 100vh;
 }
 
 header {
@@ -23,9 +23,7 @@ header {
 }
 
 main {
-    flex: 1; /* ¡Esta es la clave! Empuja el footer hacia abajo */
-    
-    /* Centra el contenido (las tarjetas o el formulario) */
+    flex: 1; 
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
@@ -52,7 +50,7 @@ main {
     border-radius: 5px;
     font-weight: bold;
     color: white;
-    background-color: #d9534f; /* Rojo UTA */
+    background-color: #d9534f;
     transition: background-color 0.2s;
     font-size: 0.9em;
 }
@@ -72,7 +70,7 @@ main {
 /* --- ESTILOS DE LA CALCULADORA --- */
 
 h1 {
-    color: #0056b3; /* Un azul similar al de la FICM */
+    color: #0056b3; 
 }
 
 .grid-container {
@@ -381,7 +379,7 @@ input[readonly] {
     padding-left: 20px;
     border-left: 3px solid #f0f0f0;
     margin-top: 15px;
-    max-height: 200px; /* Añade un scroll si hay muchos campos */
+    max-height: 200px; 
     overflow-y: auto;
 }
 .dynamic-field-group {
