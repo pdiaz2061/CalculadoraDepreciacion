@@ -1,4 +1,3 @@
-/* --- ESTRUCTURA DE PÁGINA COMPLETA --- */
 body, html {
     margin: 0;
     padding: 0;
@@ -10,8 +9,8 @@ body, html {
 
 body {
     display: flex;
-    flex-direction: column; /* Apila header, main, y footer-nav verticalmente */
-    min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
+    flex-direction: column; 
+    min-height: 100vh;
 }
 
 header {
@@ -23,9 +22,7 @@ header {
 }
 
 main {
-    flex: 1; /* ¡Esta es la clave! Empuja el footer hacia abajo */
-    
-    /* Centra el contenido (las tarjetas o el formulario) */
+    flex: 1; 
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
@@ -34,14 +31,14 @@ main {
 }
 
 h1 {
-    color: #0056b3; /* Un azul similar al de la FICM */
+    color: #0056b3; 
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
-    padding: 20px 0; /* Añade padding vertical */
+    padding: 20px 0; 
 }
 .button-group-2 {
     display: flex;
@@ -79,19 +76,12 @@ h1 {
 .btn_secondary_2:hover {
     background-color: #5a6268;
 }
-/* --- ESTILOS PARA LA PÁGINA DE CONCLUSIONES --- */
-
-/* La regla 'ul' aplica a todas las listas */
 ul {
     padding-left: 20px; /* Añade un espacio a la izquierda para los puntos */
 }
-
-/* Esta es la regla clave que pediste.
-  Aplica la justificación de texto a cada 'li' (ítem de la lista).
-*/
 ul li {
-    text-align: justify; /* ¡AQUÍ ESTÁ LA MAGIA! */
-    margin-bottom: 15px; /* Espacio entre cada punto */
+    text-align: justify; 
+    margin-bottom: 15px;
     font-size: 1.1em;
     line-height: 1.6;
 }
