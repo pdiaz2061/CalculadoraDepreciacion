@@ -6,41 +6,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const metodoTitulo = document.getElementById('metodo-titulo');
     const metodoSeleccionadoHidden = document.getElementById('metodo-seleccionado-hidden');
-
-    // --- NUEVO ELEMENTO ---
-    const footerNav = document.querySelector('.footer-nav'); // El contenedor de los botones inferiores
-
+    const footerNav = document.querySelector('.footer-nav'); 
     const form = document.getElementById('calculadora-form');
-    
     // --- ELEMENTOS DE IVA ---
     const ivaToggle = document.getElementById('iva-toggle-checkbox');
     const valorSinIVAInput = document.getElementById('valorSinIVA');
     const valorConIVAInput = document.getElementById('valorConIVA');
     const porcentajeIVAInput = document.getElementById('porcentajeIVA');
     const montoIVADisplay = document.getElementById('montoIVA-display');
-
     const vidaUtilInput = document.getElementById('vidaUtil');
-    
     // --- ELEMENTOS DE SALVAMENTO ---
     const groupValorSalvamento = document.getElementById('group-valorSalvamento');
     const valorSalvamentoInput = document.getElementById('valorSalvamento');
-
     // --- ELEMENTOS DE UNIDADES DE PRODUCCIÓN ---
     const camposUnidades = document.getElementById('campos-unidades');
     const unidadesTotalesInput = document.getElementById('unidadesTotales');
     const numPeriodosInput = document.getElementById('numPeriodos');
     const dynamicFieldsContainer = document.getElementById('dynamic-production-fields');
-    
     const resultadoDiv = document.getElementById('resultado-tabla');
     const tituloTabla = document.getElementById('titulo-tabla');
     const errorDiv = document.getElementById('error-mensaje');
-    
     const clearButton = document.getElementById('clear-button');
     const exportExcelButton = document.getElementById('export-excel-button');
-    
     let currentMetodo = '';
     let rawTableData = []; 
-
+    
     const nombresMetodos = {
         lineaRecta: "Línea Recta",
         sumaDigitos: "Suma de los Dígitos del Año",
@@ -236,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- MODIFICADO ---
     backButton.addEventListener('click', () => {
         form.reset();
         // Reset manual
