@@ -11,135 +11,151 @@
 </head>
 <body>
 
-    <header>
-        <h1>Calculadora de Depreciación de Activos</h1>
-        <p>Selecciona un método para comenzar.</p>
-    </header>
+    <div class="container">
 
-    <main>
-        
-        <section id="metodo-selector" class="grid-container">
-            
-            <div class="card" data-metodo="lineaRecta">
-                <div class="card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M5 10.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/></svg>
-                </div>
-                <h3>Línea Recta</h3>
-                <p>Depreciación constante cada año.</p>
-            </div>
-            <div class="card" data-metodo="sumaDigitos">
-                <div class="card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.5-5v1h-1v1h1v1h1v-1h1v-1h-1v-1h-1Zm-2.5 1C9 10.65 9 10 9 10h-1V5.5a1.5 1.5 0 0 1 3 0V6h1V5.5a2.5 2.5 0 0 0-5 0V10h1s0 .65.5 1.5c.95.95 1.95 1.5 3 1.5Z"/><path d="M8 1a2 2 0 0 1 2 2v2H6V3a2 2 0 0 1 2-2Z"/></svg>
-                </div>
-                <h3>Suma de Dígitos</h3>
-                <p>Mayor depreciación en los primeros años.</p>
-            </div>
-            <div class="card" data-metodo="saldosDecrecientes">
-                <div class="card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 0-1h-13a.5.5 0 0 0-.5.5zm0-4a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 0-1h-13a.5.5 0 0 0-.5.5zm0-4a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 0-1h-13a.5.5 0 0 0-.5.5z"/></svg>
-                </div>
-                <h3>Saldos Decrecientes</h3>
-                <p>Tasa constante sobre el valor en libros.</p>
-            </div>
-            <div class="card" data-metodo="unidadesProduccion">
-                <div class="card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7.5-3a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
-                </div>
-                <h3>Unidades de Producción</h3>
-                <p>Depreciación basada en el uso real.</p>
-            </div>
-        </section>
+        <header>
+            <h1>Calculadora de Depreciación de Activos</h1>
+            <p>Selecciona un método para comenzar.</p>
+        </header>
 
-        
-        <section id="calculadora-section" class="hidden">
-            <button id="back-button" class="back-button">← Volver a Métodos</button>
-            <h2 id="metodo-titulo"></h2>
+        <main>
             
-            <form id="calculadora-form">
+            <section id="metodo-selector" class="grid-container">
                 
-                <div class="iva-group">
-                    <div class="iva-toggle">
-                        <label for="iva-toggle-checkbox">Calcular con Valor Total (con IVA)</label>
-                        <input type="checkbox" id="iva-toggle-checkbox">
+                <div class="card" data-metodo="lineaRecta">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M5 10.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/></svg>
                     </div>
-                    <div class="form-group iva-input">
-                        <label for="valorSinIVA">Valor de Activo (sin IVA):</label>
-                        <input type="text" id="valorSinIVA" inputmode="numeric" required>
-                    </div>
-                    <div class="form-group iva-input">
-                        <label for="valorConIVA">Valor Total (con IVA):</label>
-                        <input type="text" id="valorConIVA" inputmode="numeric" readonly>
-                    </div>
-                    <div class="form-group iva-pct">
-                        <label for="porcentajeIVA">IVA (%):</label>
-                        <input type="text" id="porcentajeIVA" inputmode="decimal" value="15">
-                    </div>
-                    <div id="montoIVA-display" class="iva-display"></div>
+                    <h3>Línea Recta</h3>
+                    <p>Depreciación constante cada año.</p>
                 </div>
-
-                <div class="form-group">
-                    <label for="vidaUtil">Vida Útil (Períodos):</label>
-                    <input type="text" id="vidaUtil" inputmode="numeric" required>
-                    <div class="radio-group">
-                        <input type="radio" id="anos" name="unidadVidaUtil" value="anos" checked>
-                        <label for="anos">Años</label>
-                        <input type="radio" id="meses" name="unidadVidaUtil" value="meses">
-                        <label for="meses">Meses</label>
-                        <input type="radio" id="dias" name="unidadVidaUtil" value="dias">
-                        <label for="dias">Días</label>
+                <div class="card" data-metodo="sumaDigitos">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-.5-5v1h-1v1h1v1h1v-1h1v-1h-1v-1h-1Zm-2.5 1C9 10.65 9 10 9 10h-1V5.5a1.5 1.5 0 0 1 3 0V6h1V5.5a2.5 2.5 0 0 0-5 0V10h1s0 .65.5 1.5c.95.95 1.95 1.5 3 1.5Z"/><path d="M8 1a2 2 0 0 1 2 2v2H6V3a2 2 0 0 1 2-2Z"/></svg>
                     </div>
+                    <h3>Suma de Dígitos</h3>
+                    <p>Mayor depreciación en los primeros años.</p>
                 </div>
+                <div class="card" data-metodo="saldosDecrecientes">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 0-1h-13a.5.5 0 0 0-.5.5zm0-4a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 0-1h-13a.5.5 0 0 0-.5.5zm0-4a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 0-1h-13a.5.5 0 0 0-.5.5z"/></svg>
+                    </div>
+                    <h3>Saldos Decrecientes</h3>
+                    <p>Tasa constante sobre el valor en libros.</p>
+                </div>
+                <div class="card" data-metodo="unidadesProduccion">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#d9534f" viewBox="0 0 16 16"><path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7.5-3a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>
+                    </div>
+                    <h3>Unidades de Producción</h3>
+                    <p>Depreciación basada en el uso real.</p>
+                </div>
+            </section>
 
-                <div class="form-group" id="group-valorSalvamento">
-                    <label for="valorSalvamento">Valor de Salvamento:</label>
-                    <div class="input-with-toggle">
-                        <input type="text" id="valorSalvamento" inputmode="numeric" value="0">
-                        <div class="radio-group-inline">
-                            <input type="radio" id="salvamento-val" name="salvamento-unit" value="val" checked>
-                            <label for="salvamento-val">$</label>
-                            <input type="radio" id="salvamento-pct" name="salvamento-unit" value="pct">
-                            <label for="salvamento-pct">%</label>
+            
+            <section id="calculadora-section" class="hidden">
+                
+                <div class="calculadora-header">
+                    <button id="back-button" class="back-button">← Volver a Métodos</button>
+                    <span id="validation-helper" class="helper-text">Solo se permite el ingreso de números (use ',' para decimales).</span>
+                </div>
+                
+                <h2 id="metodo-titulo"></h2>
+                
+                <form id="calculadora-form">
+                    
+                    <div class="iva-group">
+                        <div class="iva-toggle">
+                            <label for="iva-toggle-checkbox">Calcular con Valor Total (con IVA)</label>
+                            <input type="checkbox" id="iva-toggle-checkbox">
+                        </div>
+                        <div class="form-group iva-input">
+                            <label for="valorSinIVA">Valor de Activo (sin IVA):</label>
+                            <input type="text" id="valorSinIVA" inputmode="decimal" required>
+                        </div>
+                        <div class="form-group iva-input">
+                            <label for="valorConIVA">Valor Total (con IVA):</label>
+                            <input type="text" id="valorConIVA" inputmode="decimal" readonly>
+                        </div>
+                        <div class="form-group iva-pct">
+                            <label for="porcentajeIVA">IVA (%):</label>
+                            <input type="text" id="porcentajeIVA" inputmode="decimal" value="15">
+                        </div>
+                        <div id="montoIVA-display" class="iva-display"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vidaUtil">Vida Útil (Períodos):</label>
+                        <input type="text" id="vidaUtil" inputmode="decimal" required>
+                        <div class="radio-group">
+                            <input type="radio" id="anos" name="unidadVidaUtil" value="anos" checked>
+                            <label for="anos">Años</label>
+                            <input type="radio" id="meses" name="unidadVidaUtil" value="meses">
+                            <label for="meses">Meses</label>
+                            <input type="radio" id="dias" name="unidadVidaUtil" value="dias">
+                            <label for="dias">Días</label>
                         </div>
                     </div>
-                </div>
 
-                <div id="campos-unidades" class="hidden">
-                    <div class="form-group">
-                        <label for="unidadesTotales">Capacidad Total (Unidades):</label>
-                        <input type="text" id="unidadesTotales" inputmode="numeric">
+                    <div class="form-group" id="group-valorSalvamento">
+                        <label for="valorSalvamento">Valor de Salvamento:</label>
+                        <div class="input-with-toggle">
+                            <input type="text" id="valorSalvamento" inputmode="decimal" value="0">
+                            <div class="radio-group-inline">
+                                <input type="radio" id="salvamento-val" name="salvamento-unit" value="val" checked>
+                                <label for="salvamento-val">$</label>
+                                <input type="radio" id="salvamento-pct" name="salvamento-unit" value="pct">
+                                <label for="salvamento-pct">%</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="numPeriodos">Número de Períodos de Producción:</label>
-                        <input type="text" id="numPeriodos" inputmode="numeric">
+
+                    <div id="campos-unidades" class="hidden">
+                        <div class="form-group">
+                            <label for="unidadesTotales">Capacidad Total:</label>
+                            <div class="input-with-toggle">
+                                <input type="text" id="unidadesTotales" inputmode="decimal">
+                                <select id="capacidad-unit-select" class="form-group-select">
+                                    <option value="Kg">Kilogramos</option>
+                                    <option value="m³">Metros Cubicos</option>
+                                    <option value="m">Metros</option>
+                                    <option value="W">Watt</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="numPeriodos">Número de Períodos de Producción:</label>
+                            <input type="text" id="numPeriodos" inputmode="numeric">
+                        </div>
+                        <div id="dynamic-production-fields"></div>
                     </div>
-                    <div id="dynamic-production-fields"></div>
+
+
+                    <input type="hidden" id="metodo-seleccionado-hidden">
+
+                    <div class="button-group">
+                        <button type="submit">Calcular</button>
+                        <button type="button" id="clear-button" class="clear-button">Realizar Otro Cálculo</button>
+                    </div>
+                </form>
+
+                <div id="resultado">
+                    <h2 id="titulo-tabla" class="hidden">Tabla de Depreciación</h2>
+                    <div id="resultado-tabla"></div>
+                    <button type="button" id="export-excel-button" class="excel-button hidden">
+                        Exportar a Excel
+                    </button>
+                    <div id="error-mensaje" class="error"></div>
                 </div>
+            </section>
 
+        </main>
+        
+        <nav class="footer-nav">
+            <a href="objetivos.html" class="btn-nav secondary">Objetivos</a>
+            <a href="conclusiones.html" class="btn-nav">Conclusiones y Recomendaciones</a>
+        </nav>
 
-                <input type="hidden" id="metodo-seleccionado-hidden">
-
-                <div class="button-group">
-                    <button type="submit">Calcular</button>
-                    <button type="button" id="clear-button" class="clear-button">Realizar Otro Cálculo</button>
-                </div>
-            </form>
-
-            <div id="resultado">
-                <h2 id="titulo-tabla" class="hidden">Tabla de Depreciación</h2>
-                <div id="resultado-tabla"></div>
-                <button type="button" id="export-excel-button" class="excel-button hidden">
-                    Exportar a Excel
-                </button>
-                <div id="error-mensaje" class="error"></div>
-            </div>
-        </section>
-
-    </main>
-    
-    <nav class="footer-nav">
-        <a href="objetivos.html" class="btn-nav secondary">Objetivos</a>
-        <a href="conclusiones.html" class="btn-nav">Conclusiones y Recomendaciones</a>
-    </nav>
-    <script src="script.js"></script>
+    </div> <script src="script.js"></script>
 </body>
 </html>
