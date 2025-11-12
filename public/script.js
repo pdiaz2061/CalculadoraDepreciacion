@@ -187,8 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isNaN(numPeriodos) || numPeriodos <= 0) {
             return;
         }
-        if (numPeriodos > 180) {
-            errorDiv.textContent = 'El número de períodos es muy alto. Límite: 180.';
+        if (numPeriodos > 100000) {
+            errorDiv.textContent = 'El número de períodos es muy alto. Límite: 100000.';
             return;
         }
         
